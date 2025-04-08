@@ -1,4 +1,6 @@
 # SEMINARI JWT
+video: https://www.youtube.com/watch?v=2EvOc2YXOYs
+fuentes: claude.ai
 
 ## Descripció
 Una API bàsica desenvolupada en Node.js amb TypeScript, utilitzant Express i Mongoose per a la gestió de dades en MongoDB. A més, s'inclou documentació amb Swagger.
