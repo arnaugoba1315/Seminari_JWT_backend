@@ -20,7 +20,18 @@ const userSchema = new mongoose.Schema(
             required: true,
             unique: true
         },
-        googleId: { type: String },
+        googleId: { 
+            type: String 
+        },
+        role: {
+            type: String,
+            enum: ['user', 'admin', 'editor'],
+            default: 'user'
+        },
+        refreshToken: {
+            type: String,
+            default: null
+        }
     },
     {
         versionKey: false,
@@ -28,13 +39,14 @@ const userSchema = new mongoose.Schema(
     }
 );
 
-export interface IUser extends Auth{
-    name : string;
-    age : number;
+export interface IUser extends Auth {
+    name: string;
+    age: number;
     password: string;
     email: string;
-    googleId: string;
-    
+    googleId?: string;
+    role?: string;
+    refreshToken?: string;
 }
 
 const User = mongoose.model('User', userSchema);

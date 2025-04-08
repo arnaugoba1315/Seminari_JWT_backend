@@ -1,6 +1,13 @@
-// src/routes/user_routes.ts
 import express from 'express';
-import { registerCtrl, loginCtrl, googleAuthCtrl, googleAuthCallback } from "../auth/auth_controller.js";
+import { 
+    registerCtrl, 
+    loginCtrl, 
+    refreshTokenCtrl, 
+    logoutCtrl,
+    googleAuthCtrl, 
+    googleAuthCallback 
+} from "../auth/auth_controller.js";
+import { checkJwt } from '../../middleware/session.js';
 
 const router = express.Router();
 
@@ -48,6 +55,16 @@ const router = express.Router();
  *       example:
  *         email: usuario@ejemplo.com
  *         password: contraseña123
+ *     RefreshToken:
+ *       type: object
+ *       required:
+ *         - refreshToken
+ *       properties:
+ *         refreshToken:
+ *           type: string
+ *           description: El token de refresco
+ *       example:
+ *         refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
  */
 
 /**
@@ -89,6 +106,43 @@ router.post("/auth/register", registerCtrl);
  *         description: Error en la solicitud
  */
 router.post("/auth/login", loginCtrl);
+
+/**
+ * @swagger
+ * /api/auth/refresh:
+ *   post:
+ *     summary: Refresca el token de acceso
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/RefreshToken'
+ *     responses:
+ *       200:
+ *         description: Token refrescado exitosamente
+ *       401:
+ *         description: Token de refresco inválido
+ */
+router.post("/auth/refresh", refreshTokenCtrl);
+
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Cierra la sesión del usuario
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Sesión cerrada exitosamente
+ *       401:
+ *         description: No autorizado
+ */
+router.post("/auth/logout", checkJwt, logoutCtrl);
+
 /**
  * @swagger
  * /api/auth/google:
@@ -99,7 +153,7 @@ router.post("/auth/login", loginCtrl);
  *       302:
  *         description: Redirección a Google para autenticación
  */
-router.get('/auth/google',googleAuthCtrl );
+router.get('/auth/google', googleAuthCtrl);
 
 /**
  * @swagger
